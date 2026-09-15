@@ -1,0 +1,8 @@
+# Replace the hostname and username with your own cluster account.
+# Prefer a fixed login node when your cluster uses round-robin login DNS.
+Host my-hpc
+    HostName fixed-login.example.edu
+    User firstname.lastname
+    IdentityFile ~/.ssh/id_ed25519
+    ServerAliveInterval 15
+    ServerAliveCountMax 3

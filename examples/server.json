@@ -1,0 +1,7 @@
+{
+  "clusterLabel": "Student HPC Lab",
+  "refreshMs": 7000,
+  "agentDefaults": {},
+  "partitionLimits": {},
+  "limitsNote": "Add your own confirmed Slurm limits in server.json."
+}

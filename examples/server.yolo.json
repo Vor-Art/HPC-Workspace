@@ -1,0 +1,10 @@
+{
+  "clusterLabel": "Student HPC Lab",
+  "agentDefaults": {
+    "approvalPolicy": "never",
+    "sandbox": "danger-full-access",
+    "effort": "xhigh",
+    "serviceTier": "fast"
+  },
+  "partitionLimits": {}
+}

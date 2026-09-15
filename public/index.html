@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <title>HPC · Workspace</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="/"
+        ><span class="brand-mark">H</span
+        ><span>HPC<span class="brand-sub">WORKSPACE</span></span></a
+      >
+      <div class="workspace-label">HPC CLUSTER</div>
+      <nav>
+        <button class="nav active" data-tab="overview">
+          <span>◈</span> Обзор</button
+        ><button class="nav" data-tab="agents">
+          <span>✳</span> Агенты <b id="nav-agent-count">0</b></button
+        ><button class="nav" data-tab="terminal">
+          <span>▣</span> Терминалы</button
+        ><button class="nav" data-tab="resources">
+          <span>▤</span> Ресурсы
+        </button>
+      </nav>
+      <div class="sidebar-bottom">
+        <span class="dot" id="connection-dot"></span
+        ><span id="connection">Подключение…</span
+        ><small id="identity">SSH · защищённый туннель</small>
+      </div>
+    </aside>
+    <main>
+      <header>
+        <div class="breadcrumb">
+          Личное пространство <span>/</span>
+          <strong id="page-name">Обзор</strong>
+        </div>
+        <div class="header-right">
+          <button id="refresh-panel" title="Обновить данные сейчас">
+            ↻ Обновить</button
+          ><span class="live-pill"><i class="dot"></i> LIVE</span
+          ><time id="clock"></time>
+        </div>
+      </header>
+      <div class="page-heading">
+        <div>
+          <div class="eyebrow" id="page-eyebrow">ВАШ РАБОЧИЙ КЛАСТЕР</div>
+          <h1 id="page-title">Всё под контролем.</h1>
+          <p id="page-subtitle">
+            Агенты, терминалы и вычисления — в одном месте.
+          </p>
+        </div>
+        <button class="primary" id="new-agent">＋ Новый агент</button>
+      </div>
+      <div id="notice" class="notice" hidden></div>
+      <div id="errors"></div>
+      <section id="metrics" class="metrics"></section>
+      <section id="overview" class="tab-page">
+        <div class="overview-grid">
+          <div class="card">
+            <div class="section-head">
+              <h2>Агенты</h2>
+              <button class="text-button" data-tab="agents">
+                Все агенты ↗
+              </button>
+            </div>
+            <div id="overview-agents"></div>
+          </div>
+          <div class="card">
+            <div class="section-head">
+              <h2>Рабочие терминалы</h2>
+              <button class="text-button" data-tab="terminal">
+                Открыть ↗
+              </button>
+            </div>
+            <div id="overview-tmux"></div>
+          </div>
+        </div>
+        <div class="card resource-overview">
+          <div class="section-head">
+            <h2>Выделенные ресурсы</h2>
+            <span class="muted small">Только ваши задания Slurm</span>
+          </div>
+          <div id="overview-jobs"></div>
+        </div>
+        <div class="mode-strip">
+          <span>✦ &nbsp; Настройки новых запусков Codex</span>
+          <div id="config-badges"></div>
+        </div>
+      </section>
+      <section id="agents" class="tab-page" hidden>
+        <div class="split">
+          <div class="card list-card">
+            <div class="section-head">
+              <h2>Сессии агентов</h2>
+              <span id="agents-count" class="muted small"></span>
+            </div>
+            <div class="agent-filters" aria-label="Список сессий">
+              <button
+                data-agent-filter="main"
+                class="active"
+                aria-pressed="true"
+              >
+                Основные <span id="main-agent-count">0</span></button
+              ><button data-agent-filter="archive" aria-pressed="false">
+                Архив <span id="archived-agent-count">0</span>
+              </button>
+            </div>
+            <div id="agent-list"></div>
+          </div>
+          <div class="card detail-card">
+            <div id="agent-detail" class="empty tall">
+              Выберите агента, чтобы открыть диалог.
+            </div>
+          </div>
+        </div>
+      </section>
+      <section id="terminal" class="tab-page" hidden>
+        <div class="split terminal-split">
+          <div class="card list-card">
+            <div class="section-head">
+              <h2>tmux</h2>
+              <button class="text-button" id="new-tmux">＋ Сессия</button>
+            </div>
+            <div id="tmux-list"></div>
+          </div>
+          <div class="card terminal-card">
+            <div class="section-head">
+              <div>
+                <h2 id="terminal-title">Терминал</h2>
+                <span id="terminal-path" class="muted small"
+                  >Выберите панель tmux слева</span
+                >
+              </div>
+              <span id="terminal-live" class="tag">Снимок каждые 2 с</span>
+            </div>
+            <pre id="terminal-output" tabindex="0">
+Здесь появится вывод выбранной панели.</pre
+            >
+            <div class="terminal-keys">
+              <button data-key="C-c">Ctrl C</button
+              ><button data-key="Escape">Esc</button
+              ><button data-key="Enter">Enter</button
+              ><button data-key="Up">↑</button><button data-key="Down">↓</button
+              ><span class="muted small">Текст отправляется с Enter</span>
+            </div>
+            <form id="terminal-form" class="composer">
+              <input
+                id="terminal-input"
+                autocomplete="off"
+                placeholder="Команда или текст для текущего терминала…"
+              /><button class="primary" type="submit">Отправить ↵</button>
+            </form>
+          </div>
+        </div>
+      </section>
+      <section id="resources" class="tab-page" hidden>
+        <div class="card">
+          <div class="section-head">
+            <h2>Ваши задания</h2>
+            <span class="muted small">Автообновление включено</span>
+          </div>
+          <div id="jobs-table"></div>
+        </div>
+        <div class="section-label">ПАРТИЦИИ И ЛИМИТЫ</div>
+        <div id="partition-cards" class="overview-grid"></div>
+        <p class="footnote">
+          Очередь и ресурсы считываются из Slurm. Пользовательские лимиты
+          задаются в настройках панели.
+        </p>
+      </section>
+      <footer>
+        <span>HPC Workspace</span><span id="last-update">Ожидание данных…</span>
+      </footer>
+    </main>
+    <dialog id="modal">
+      <form id="modal-form">
+        <div class="section-head">
+          <h2 id="modal-title"></h2>
+          <button id="modal-close" type="button" class="icon-button">×</button>
+        </div>
+        <div id="modal-body"></div>
+        <div class="modal-actions">
+          <button type="button" id="modal-cancel">Отмена</button
+          ><button type="submit" class="primary" id="modal-submit">
+            Создать
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <div id="toast" role="status" hidden></div>
+  </body>
+</html>

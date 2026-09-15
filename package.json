@@ -1,0 +1,16 @@
+{
+  "name": "hpc-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "A personal SSH dashboard for tmux, Slurm and Codex agents",
+  "license": "MIT",
+  "repository": "github:Vor-Art/HPC-Workspace",
+  "engines": {
+    "node": ">=18.19"
+  },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test tests/*.test.mjs"
+  }
+}
